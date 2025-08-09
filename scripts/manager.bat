@@ -68,7 +68,9 @@ echo Activating virtual environment...
 call .venv\Scripts\activate.bat
 
 echo Installing/updating required packages...
-pip install -r ..\requirements.txt
+cd ..
+pip install -r requirements.txt
+cd scripts
 if errorlevel 1 (
     echo ERROR: Failed to install dependencies
     pause
@@ -165,11 +167,11 @@ if %errorlevel%==0 (
 
 echo.
 echo Log File Status:
-if exist "..\src\jwhisper.log" (
+if exist "..\jwhisper.log" (
     echo [OK] Log file exists: jwhisper.log
-    for %%A in (..\src\jwhisper.log) do echo     Size: %%~zA bytes
+    for %%A in (..\jwhisper.log) do echo     Size: %%~zA bytes
     echo     Last 3 entries:
-    powershell -Command "Get-Content '..\src\jwhisper.log' | Select-Object -Last 3"
+    powershell -Command "Get-Content '..\jwhisper.log' | Select-Object -Last 3"
 ) else (
     echo [--] No log file found
 )
@@ -184,11 +186,14 @@ echo ========================================
 echo             VIEW LOGS
 echo ========================================
 echo.
-if exist "..\src\jwhisper.log" (
+if exist "..\jwhisper.log" (
     echo Opening jwhisper.log in notepad...
-    notepad "..\src\jwhisper.log"
+    notepad "..\jwhisper.log"
+) else if exist "..\whisper.log" (
+    echo Opening whisper.log in notepad...
+    notepad "..\whisper.log"
 ) else (
-    echo No log file found (jwhisper.log)
+    echo No log file found
     echo The log file will be created when the service runs.
 )
 echo.
