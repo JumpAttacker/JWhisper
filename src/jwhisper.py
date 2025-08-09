@@ -341,6 +341,7 @@ def load_model():
 # -------------------- TEXT INSERTION --------------------
 def insert_text(text):
     """Insert text with automatic clipboard pasting - prioritized method"""
+    logger.info(f"Attempting to insert text: {text[:50]}...")
     
     # Save current clipboard
     old_clipboard = None
@@ -351,12 +352,14 @@ def insert_text(text):
     
     # Copy new text to clipboard
     pyperclip.copy(text)
-    time.sleep(0.1)  # Slightly longer delay for reliability
+    time.sleep(0.2)  # Increased delay for better reliability
     
     # Method 1: Try pyautogui hotkey (most reliable on Windows) - PRIORITIZED
     try:
+        # Ensure we're not at screen edge (pyautogui failsafe)
+        pyautogui.moveTo(pyautogui.position()[0], pyautogui.position()[1])
         pyautogui.hotkey('ctrl', 'v')
-        print("✓ Text pasted from clipboard")
+        logger.info("✓ Text pasted from clipboard using Ctrl+V")
         
         # Quiet completion beep - very brief and low volume
         try:
@@ -364,8 +367,8 @@ def insert_text(text):
         except:
             pass
         return
-    except:
-        pass
+    except Exception as e:
+        logger.warning(f"pyautogui hotkey failed: {e}")
     
     # Method 2: Try pynput Controller
     try:
@@ -513,7 +516,8 @@ def stop_recording_and_transcribe():
         f"Text: {final_text[:100]}{'...' if len(final_text) > 100 else ''}"
     )
     
-    # Insert text
+    # Insert text automatically into active window
+    time.sleep(0.1)  # Small delay to ensure active window is ready
     insert_text(final_text)
 
 # -------------------- KEY HANDLING --------------------
