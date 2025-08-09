@@ -1,0 +1,9 @@
+faster-whisper
+sounddevice
+numpy
+pynput
+pyautogui
+pyperclip
+pywin32
+pystray
+pillow
